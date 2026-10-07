@@ -1,0 +1,129 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [5 0 R 7 0 R] /Count 2 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 6 0 R >>
+endobj
+6 0 obj
+<< /Length 3568 >>
+stream
+0.09 0.20 0.17 rg
+BT /F2 8 Tf 54 765 Td (XENMESH  /  ADMIN AUTHENTICATION) Tj ET
+0.82 0.84 0.81 RG 54 755 m 558 755 l S
+0 0 0 rg
+BT /F2 20 Tf 54 716 Td (Xenmesh Fashion House - Admin Authentication) Tj ET
+BT /F1 10 Tf 54 704 Td (Implementation summary | Commit b56af07 | October 8, 2026) Tj ET
+0.09 0.20 0.17 rg BT /F2 12 Tf 54 685 Td (Overview) Tj ET 0 0 0 rg
+BT /F1 10 Tf 54 662 Td (Added a NestJS authentication backend for the admin panel using email and password,) Tj ET
+BT /F1 10 Tf 54 648 Td (Prisma 7, MySQL, and secure browser sessions. Authentication is required for API routes) Tj ET
+BT /F1 10 Tf 54 634 Td (unless a route is explicitly public.) Tj ET
+0.09 0.20 0.17 rg BT /F2 12 Tf 54 623 Td (Backend changes) Tj ET 0 0 0 rg
+BT /F1 10 Tf 54 600 Td (- Global Nest authentication guard protects routes by default; POST /auth/sign-in is) Tj ET
+BT /F1 10 Tf 54 586 Td (- explicitly public.) Tj ET
+BT /F1 10 Tf 54 570 Td (- POST /auth/sign-in validates credentials, checks that the account is an ADMIN, verifies) Tj ET
+BT /F1 10 Tf 54 556 Td (- the password hash, and creates a signed-in session. Invalid credentials receive a) Tj ET
+BT /F1 10 Tf 54 542 Td (- generic error.) Tj ET
+BT /F1 10 Tf 54 526 Td (- GET /auth/me returns the currently authenticated admin. POST /auth/sign-out ends the) Tj ET
+BT /F1 10 Tf 54 512 Td (- current session.) Tj ET
+BT /F1 10 Tf 54 496 Td (- The authentication package uses an HttpOnly session cookie, so browser JavaScript cannot) Tj ET
+BT /F1 10 Tf 54 482 Td (- read the session token.) Tj ET
+BT /F1 10 Tf 54 466 Td (- Sessions are stored in MySQL in the new AuthSession table and are linked to User) Tj ET
+BT /F1 10 Tf 54 452 Td (- records.) Tj ET
+BT /F1 10 Tf 54 436 Td (- Password hashing uses Nest authentication package scrypt hashing; older hashes are) Tj ET
+BT /F1 10 Tf 54 422 Td (- upgraded after successful sign-in.) Tj ET
+BT /F1 10 Tf 54 406 Td (- CORS is configured for the local frontend and the backend defaults to port 3001.) Tj ET
+0.09 0.20 0.17 rg BT /F2 12 Tf 54 397 Td (Admin account seed) Tj ET 0 0 0 rg
+BT /F1 10 Tf 54 374 Td (Run npm run seed:admin from the backend folder. The command builds the backend, loads) Tj ET
+BT /F1 10 Tf 54 360 Td (backend/.env, and ensures an administrator exists.) Tj ET
+BT /F1 10 Tf 54 342 Td (- Set ADMIN_EMAIL and ADMIN_PASSWORD in the actual backend/.env file; .env.example is only) Tj ET
+BT /F1 10 Tf 54 328 Td (- a template.) Tj ET
+BT /F1 10 Tf 54 312 Td (- Use a password of at least 12 characters. The seed rejects missing settings or invalid) Tj ET
+BT /F1 10 Tf 54 298 Td (- values rather than using a built-in password.) Tj ET
+BT /F1 10 Tf 54 282 Td (- If the email is new, the seed creates the account. If it belongs to an existing) Tj ET
+BT /F1 10 Tf 54 268 Td (- customer, the account is promoted without replacing its password. It is safe to rerun.) Tj ET
+BT /F1 10 Tf 54 252 Td (- The backend also ensures this configured admin account at startup.) Tj ET
+0.09 0.20 0.17 rg BT /F2 12 Tf 54 243 Td (Database changes) Tj ET 0 0 0 rg
+BT /F1 10 Tf 54 220 Td (- New users default to the ADMIN role in the Prisma schema.) Tj ET
+BT /F1 10 Tf 54 204 Td (- A migration creates AuthSession with session expiry, activity, optional MFA state,) Tj ET
+BT /F1 10 Tf 54 190 Td (- metadata, and a cascading User relation.) Tj ET
+BT /F1 10 Tf 54 174 Td (- The migration was applied to the local MySQL database and Prisma reported the schema up) Tj ET
+BT /F1 10 Tf 54 160 Td (- to date.) Tj ET
+0.45 0.49 0.46 rg
+BT /F1 8 Tf 54 30 Td (Xenmesh Fashion House  |  Page 1 of 2) Tj ET
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 8 0 R >>
+endobj
+8 0 obj
+<< /Length 3311 >>
+stream
+0.09 0.20 0.17 rg
+BT /F2 8 Tf 54 765 Td (XENMESH  /  ADMIN AUTHENTICATION) Tj ET
+0.82 0.84 0.81 RG 54 755 m 558 755 l S
+0 0 0 rg
+BT /F2 20 Tf 54 720 Td (Setup, verification, and scope) Tj ET
+0.09 0.20 0.17 rg BT /F2 12 Tf 54 705 Td (Local setup) Tj ET 0 0 0 rg
+BT /F1 10 Tf 54 682 Td (1. Keep existing database settings in backend/.env. Add the admin and local app settings) Tj ET
+BT /F1 10 Tf 54 668 Td (below, using your own password:) Tj ET
+BT /F1 9 Tf 54 650 Td (    ADMIN_EMAIL=admin@xenmesh.local) Tj ET
+BT /F1 9 Tf 54 632 Td (    ADMIN_PASSWORD=your-own-password-at-least-12-characters) Tj ET
+BT /F1 9 Tf 54 614 Td (    PORT=3001) Tj ET
+BT /F1 9 Tf 54 596 Td (    FRONTEND_URL=http://localhost:3000) Tj ET
+BT /F1 10 Tf 54 578 Td (2. From backend, run npm run seed:admin, then npm run start:dev.) Tj ET
+BT /F1 10 Tf 54 560 Td (3. Set NEXT_PUBLIC_API_URL=http://localhost:3001 in frontend/.env.local, start the) Tj ET
+BT /F1 10 Tf 54 546 Td (frontend, and sign in at http://localhost:3000/login using the same admin credentials.) Tj ET
+0.09 0.20 0.17 rg BT /F2 12 Tf 54 535 Td (Verification performed) Tj ET 0 0 0 rg
+BT /F1 10 Tf 54 512 Td (- NestJS backend build and lint passed.) Tj ET
+BT /F1 10 Tf 54 496 Td (- Five focused admin authentication unit tests passed, covering successful sign-in,) Tj ET
+BT /F1 10 Tf 54 482 Td (- password hash upgrade, customer rejection, unknown-email verification, and malformed) Tj ET
+BT /F1 10 Tf 54 468 Td (- credentials.) Tj ET
+BT /F1 10 Tf 54 452 Td (- Next.js production build and frontend lint passed.) Tj ET
+BT /F1 10 Tf 54 436 Td (- Prisma schema validation passed; the MySQL migration was applied and migration status) Tj ET
+BT /F1 10 Tf 54 422 Td (- was clean.) Tj ET
+BT /F1 10 Tf 54 406 Td (- Runtime smoke checks confirmed protected API routes return 401 without a session, while) Tj ET
+BT /F1 10 Tf 54 392 Td (- sign-in remains public and validates its request.) Tj ET
+0.09 0.20 0.17 rg BT /F2 12 Tf 54 383 Td (Commit and frontend note) Tj ET 0 0 0 rg
+BT /F1 10 Tf 54 360 Td (Commit b56af07 \(feat: add admin authentication\) contains the backend authentication) Tj ET
+BT /F1 10 Tf 54 346 Td (module, Prisma schema and migration, seed command, focused tests, and backend setup) Tj ET
+BT /F1 10 Tf 54 332 Td (documentation.) Tj ET
+BT /F1 10 Tf 54 314 Td (The frontend directory is tracked as a Git link in the parent checkout. Its login page,) Tj ET
+BT /F1 10 Tf 54 300 Td (admin page, and route-protection changes exist in the local workspace but were not) Tj ET
+BT /F1 10 Tf 54 286 Td (included in this parent-repository commit. Commit those frontend changes from the) Tj ET
+BT /F1 10 Tf 54 272 Td (frontend repository if you need them versioned there.) Tj ET
+0.09 0.20 0.17 rg BT /F2 12 Tf 54 261 Td (Production follow-up) Tj ET 0 0 0 rg
+BT /F1 10 Tf 54 238 Td (This is configured for local admin use. Before production, persist any additional) Tj ET
+BT /F1 10 Tf 54 224 Td (authentication stores required by enabled features and add login rate limiting. Use) Tj ET
+BT /F1 10 Tf 54 210 Td (production secrets and HTTPS settings appropriate to the deployed domain.) Tj ET
+BT /F1 10 Tf 54 192 Td (No actual .env credentials or passwords are included in this report.) Tj ET
+0.45 0.49 0.46 rg
+BT /F1 8 Tf 54 30 Td (Xenmesh Fashion House  |  Page 2 of 2) Tj ET
+endstream
+endobj
+xref
+0 9
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000127 00000 n 
+0000000224 00000 n 
+0000000326 00000 n 
+0000000462 00000 n 
+0000004082 00000 n 
+0000004218 00000 n 
+trailer
+<< /Size 9 /Root 1 0 R >>
+startxref
+7581
+%%EOF
