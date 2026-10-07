@@ -25,6 +25,45 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+## Admin authentication
+
+Authentication uses a MySQL-backed opaque session cookie. All API routes are
+protected by default; `POST /auth/sign-in` is the public sign-in route.
+
+1. Keep your existing `.env` and add `PORT=3001`,
+   `FRONTEND_URL=http://localhost:3000`, an `ADMIN_EMAIL`, and an
+   `ADMIN_PASSWORD` of at least 12 characters. If you do not have a `.env`
+   file yet, copy `.env.example` and fill in the MySQL connection values too.
+2. Apply the Prisma migrations and regenerate the client:
+
+   ```bash
+   npx prisma migrate dev
+   npx prisma generate
+   ```
+
+3. Seed the configured administrator:
+
+   ```bash
+   npm run seed:admin
+   ```
+
+   This creates the admin if the email does not exist. If the account already
+   exists as a customer, it is promoted to admin without changing its password.
+   The command is safe to rerun.
+4. Start the API with `npm run start:dev`. The same configured administrator is
+   also ensured at startup.
+5. Configure `frontend/.env.local` with
+   `NEXT_PUBLIC_API_URL=http://localhost:3001` and start the frontend.
+
+The API exposes `POST /auth/sign-in`, `GET /auth/me`, and
+`POST /auth/sign-out`. The session cookie is HttpOnly and is not returned as a
+JavaScript-readable token.
+
+Only browser sessions are persisted in MySQL for this local admin flow. Before
+deploying with `NODE_ENV=production`, add persistent stores for the
+authentication package's refresh-token and MFA contracts (the package rejects
+in-memory stores in production) and configure login rate limiting.
+
 ## Project setup
 
 ```bash

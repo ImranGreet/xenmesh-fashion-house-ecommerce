@@ -3,9 +3,7 @@ import { PasswordHasher } from '@nestjs/authentication';
 
 @Injectable()
 export class PasswordService {
-  constructor(
-    private readonly passwordHasher: PasswordHasher,
-  ) {}
+  constructor(private readonly passwordHasher: PasswordHasher) {}
 
   async hash(password: string): Promise<string> {
     return this.passwordHasher.hash(password);
@@ -13,7 +11,7 @@ export class PasswordService {
 
   async verify(
     password: string,
-    storedHash: string | undefined,
+    storedHash: string | null | undefined,
   ): Promise<boolean> {
     return this.passwordHasher.verify(password, storedHash);
   }
