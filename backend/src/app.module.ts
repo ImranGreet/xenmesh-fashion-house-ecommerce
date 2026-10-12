@@ -5,6 +5,8 @@ import { AppService } from './app.service.js';
 import { PrismaModule } from './database/prisma.module.js';
 import { AuthModule } from './module/auth/auth.module.js';
 import { CatalogModule } from './module/catalog/catalog.module.js';
+import { OrdersModule } from './module/orders/orders.module.js';
+import { SettingsModule } from './module/settings/settings.module.js';
 
 @Module({
   imports: [
@@ -20,6 +22,8 @@ import { CatalogModule } from './module/catalog/catalog.module.js';
     PrismaModule,
     AuthModule,
     CatalogModule,
+    OrdersModule,
+    SettingsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

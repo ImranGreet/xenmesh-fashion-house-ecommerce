@@ -376,6 +376,44 @@ export class CatalogService {
     });
   }
 
+  async getPublicProduct(id: number) {
+    const product = await this.prisma.product.findUnique({
+      where: { id },
+      include: { category: { select: { name: true } } },
+    });
+    if (!product) throw new NotFoundException('Product not found.');
+
+    const now = new Date();
+    const promotions = await this.prisma.promotion.findMany({
+      where: {
+        active: true,
+        startsAt: { lte: now },
+        endsAt: { gt: now },
+      },
+      include: { products: { select: { productId: true } } },
+    });
+    const applicablePromotion = promotions
+      .filter((promotion) => {
+        if (promotion.targetType === 'STOREWIDE') return true;
+        if (promotion.targetType === 'CATEGORY') {
+          return promotion.targetValue?.toLowerCase() === product.category.name.toLowerCase();
+        }
+        return promotion.products.some(({ productId }) => productId === product.id);
+      })
+      .sort((left, right) => right.discountPercent - left.discountPercent)[0];
+
+    if (!applicablePromotion) return serializedProduct(product);
+    const price = Number(product.price);
+    return {
+      ...serializedProduct(product),
+      discountPercent: applicablePromotion.discountPercent,
+      salePrice: Number(
+        (price * (1 - applicablePromotion.discountPercent / 100)).toFixed(2),
+      ),
+      promotion: applicablePromotion.title,
+    };
+  }
+
   async createProduct(value: unknown) {
     const product = productInput(value) as ProductInput;
     await this.assertCategoryActive(product.categoryId);

@@ -1,8 +1,11 @@
 # Xenmesh Fashion House admin
 
-The Vite app provides a cookie-authenticated admin dashboard for managing the
-product catalog and time-bound promotions. The public catalog endpoints do not
-require an admin session.
+The Vite app uses React Router for the public storefront at `/`, product detail
+pages at `/products/:productId`, and the cookie-authenticated admin dashboard at
+`/admin`. Customers can order single products or their cart with cash on
+delivery. Admins manage orders, the product catalog, categories, and time-bound
+promotions. Product and category browsing and order placement are public; order
+management requires an admin session.
 
 ## Local setup
 
@@ -25,7 +28,8 @@ require an admin session.
    npm run dev
    ```
 
-The dashboard is served at `http://localhost:5173`. Set `VITE_API_URL` in
+The storefront is served at `http://localhost:5173` and the admin dashboard at
+`http://localhost:5173/admin`. Set `VITE_API_URL` in
 `frontend/.env` to override the API origin. The backend's `FRONTEND_URL` must
 match the frontend origin so credentialed sign-in cookies are accepted.
 
@@ -37,11 +41,18 @@ The first admin is created by the backend from `ADMIN_EMAIL` and
 Public endpoints:
 
 - `GET /catalog/categories`
-- `GET /catalog/products`
+- `GET /catalog/products` (includes applicable live sale prices)
+- `GET /catalog/products/:id` (product details with the current sale price)
 - `GET /catalog/promotions` (active offers that have not ended)
+- `GET /store/settings` (public store name and contact information)
+- `POST /orders` (place a cash-on-delivery order; product prices and stock are
+  checked by the backend)
 
 Admin session required:
 
+- `GET /admin/orders`
+- `PATCH /admin/orders/:id` (advance the order status or cancel and restock)
+- `PATCH /admin/settings` (update public store name, email, phone and location)
 - `GET /admin/categories`, `POST /admin/categories`,
   `PATCH /admin/categories/:id`, `DELETE /admin/categories/:id`
 - `GET /admin/products`, `POST /admin/products`,

@@ -29,6 +29,12 @@ export class CatalogController {
   }
 
   @Public()
+  @Get('catalog/products/:id')
+  publicProduct(@Param('id', ParseIntPipe) id: number) {
+    return this.catalogService.getPublicProduct(id);
+  }
+
+  @Public()
   @Get('catalog/promotions')
   publicPromotions() {
     return this.catalogService.listPromotions(true);

@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { FormEvent, ReactNode } from 'react'
 import './App.css'
+import { OrdersTable } from './admin/OrdersTable'
+import { StoreSettingsForm } from './admin/StoreSettingsForm'
+import type { StoreSettings } from './admin/StoreSettingsForm'
 
 const API_URL = (import.meta.env.VITE_API_URL ?? 'http://localhost:3001').replace(/\/$/, '')
 
@@ -50,7 +53,7 @@ type Promotion = {
   status: 'LIVE' | 'SCHEDULED' | 'ENDED' | 'PAUSED'
 }
 
-type Section = 'Overview' | 'Products' | 'Categories' | 'Promotions' | 'Settings'
+type Section = 'Overview' | 'Orders' | 'Products' | 'Categories' | 'Promotions' | 'Settings'
 
 class ApiError extends Error {
   readonly status: number
@@ -396,6 +399,7 @@ function App() {
   const [products, setProducts] = useState<Product[]>([])
   const [categoryRecords, setCategoryRecords] = useState<Category[]>([])
   const [promotions, setPromotions] = useState<Promotion[]>([])
+  const [storeSettings, setStoreSettings] = useState<StoreSettings | null>(null)
   const [loadingData, setLoadingData] = useState(true)
   const [dataError, setDataError] = useState('')
   const [search, setSearch] = useState('')
@@ -428,12 +432,14 @@ function App() {
       api<Product[]>('/admin/products'),
       api<Category[]>('/admin/categories'),
       api<Promotion[]>('/admin/promotions'),
+      api<StoreSettings>('/store/settings'),
     ])
-      .then(([productData, categoryData, promotionData]) => {
+      .then(([productData, categoryData, promotionData, settingsData]) => {
         if (!mounted) return
         setProducts(productData)
         setCategoryRecords(categoryData)
         setPromotions(promotionData)
+        setStoreSettings(settingsData)
       })
       .catch((error: unknown) => {
         if (!mounted) return
@@ -459,14 +465,16 @@ function App() {
   }, [products, search])
 
   async function refreshData() {
-    const [productData, categoryData, promotionData] = await Promise.all([
+    const [productData, categoryData, promotionData, settingsData] = await Promise.all([
       api<Product[]>('/admin/products'),
       api<Category[]>('/admin/categories'),
       api<Promotion[]>('/admin/promotions'),
+      api<StoreSettings>('/store/settings'),
     ])
     setProducts(productData)
     setCategoryRecords(categoryData)
     setPromotions(promotionData)
+    setStoreSettings(settingsData)
   }
 
   async function signOut() {
@@ -527,12 +535,12 @@ function App() {
         </a>
         <span className="side-label nav-section-label">WORKSPACE</span>
         <nav className="side-nav" aria-label="Main navigation">
-          {(['Overview', 'Products', 'Categories', 'Promotions'] as Section[]).map((item) => <button key={item} className={`nav-link nav-item ${section === item ? 'nav-active router-link-exact-active' : ''}`} onClick={() => { setSection(item); setMobileNavOpen(false) }}><Icon name={item === 'Overview' ? 'grid' : item === 'Products' ? 'box' : item === 'Categories' ? 'layers' : 'tag'} /><span>{item}</span>{item === 'Promotions' && activePromotions.length > 0 && <span className="nav-count">{activePromotions.length}</span>}</button>)}
+          {(['Overview', 'Orders', 'Products', 'Categories', 'Promotions'] as Section[]).map((item) => <button key={item} className={`nav-link nav-item ${section === item ? 'nav-active router-link-exact-active' : ''}`} onClick={() => { setSection(item); setMobileNavOpen(false) }}><Icon name={item === 'Overview' ? 'grid' : item === 'Products' ? 'box' : item === 'Categories' ? 'layers' : item === 'Orders' ? 'bag' : 'tag'} /><span>{item}</span>{item === 'Promotions' && activePromotions.length > 0 && <span className="nav-count">{activePromotions.length}</span>}</button>)}
         </nav>
         <span className="side-label nav-section-label side-label-lower">STORE</span>
         <nav className="side-nav"><button className={`nav-link ${section === 'Settings' ? 'nav-active' : ''}`} onClick={() => { setSection('Settings'); setMobileNavOpen(false) }}><Icon name="settings" /><span>Settings</span></button></nav>
         <div className="sidebar-bottom">
-          <div className="store-card"><span className="store-card-icon"><Icon name="bag" size={18} /></span><div><strong>Your storefront</strong><a href={`${API_URL}/catalog/products`} target="_blank" rel="noreferrer">Browse public catalog <Icon name="arrow" size={12} /></a></div></div>
+          <div className="store-card"><span className="store-card-icon"><Icon name="bag" size={18} /></span><div><strong>Your storefront</strong><a href="/">Browse your storefront <Icon name="arrow" size={12} /></a></div></div>
           <button className="profile-button" onClick={signOut} title="Sign out"><span className="avatar">{initials}</span><span className="profile-copy"><strong>{displayName}</strong><small>Store administrator</small></span><Icon name="logout" size={17} /></button>
         </div>
       </aside>
@@ -546,8 +554,8 @@ function App() {
 
         <div className="page-content">
           <div className="welcome-row">
-            <div><span className="eyebrow">XENMESH FASHION HOUSE</span><h1>{section === 'Overview' ? <>A good day to <em>make moves.</em></> : section === 'Products' ? <>Your <em>collection.</em></> : section === 'Categories' ? <>Organize your <em>collection.</em></> : section === 'Promotions' ? <>A little something <em>extra.</em></> : <>The <em>details.</em></>}</h1><p>{section === 'Overview' ? 'Here’s the latest from your store. Make it a good one.' : section === 'Products' ? 'Every piece, thoughtfully chosen and ready to be found.' : section === 'Categories' ? 'Keep your product categories tidy and easy to browse.' : section === 'Promotions' ? 'Make room for the moments worth celebrating.' : 'Your house, your details. Keep them up to date.'}</p></div>
-            <div className="welcome-actions">{section !== 'Settings' && <button className="button button-dark" onClick={() => section === 'Promotions' ? setPromotionModal(null) : section === 'Categories' ? setCategoryModal(null) : setProductModal(null)}><Icon name="plus" size={17} /> {section === 'Promotions' ? 'New offer' : section === 'Categories' ? 'Add category' : 'Add product'}</button>}</div>
+            <div><span className="eyebrow">XENMESH FASHION HOUSE</span><h1>{section === 'Overview' ? <>A good day to <em>make moves.</em></> : section === 'Orders' ? <>Orders, <em>handled with care.</em></> : section === 'Products' ? <>Your <em>collection.</em></> : section === 'Categories' ? <>Organize your <em>collection.</em></> : section === 'Promotions' ? <>A little something <em>extra.</em></> : <>The <em>details.</em></>}</h1><p>{section === 'Overview' ? 'Here’s the latest from your store. Make it a good one.' : section === 'Orders' ? 'Review cash-on-delivery orders and keep customers updated.' : section === 'Products' ? 'Every piece, thoughtfully chosen and ready to be found.' : section === 'Categories' ? 'Keep your product categories tidy and easy to browse.' : section === 'Promotions' ? 'Make room for the moments worth celebrating.' : 'Your house, your details. Keep them up to date.'}</p></div>
+            <div className="welcome-actions">{section !== 'Settings' && section !== 'Orders' && <button className="button button-dark" onClick={() => section === 'Promotions' ? setPromotionModal(null) : section === 'Categories' ? setCategoryModal(null) : setProductModal(null)}><Icon name="plus" size={17} /> {section === 'Promotions' ? 'New offer' : section === 'Categories' ? 'Add category' : 'Add product'}</button>}</div>
           </div>
 
           {dataError && <div className="error-banner" role="alert"><span>{dataError}</span><button onClick={() => setDataError('')}>Dismiss</button></div>}
@@ -559,7 +567,7 @@ function App() {
                 <article className="stat-card"><div className="stat-top"><span>Total products</span><span className="stat-icon icon-sand"><Icon name="box" /></span></div><strong>{products.length}</strong><small>pieces in your collection</small><div className="stat-bottom"><span>Across {categoryCount} {categoryCount === 1 ? 'category' : 'categories'}</span><Icon name="arrow" size={14} /></div></article>
                 <article className="stat-card"><div className="stat-top"><span>Live promotions</span><span className="stat-icon icon-lilac"><Icon name="tag" /></span></div><strong>{activePromotions.length.toString().padStart(2, '0')}</strong><small>offers running right now</small><button className="stat-bottom stat-link" onClick={() => setSection('Promotions')}><span>Manage your offers</span><Icon name="arrow" size={14} /></button></article>
                 <article className="stat-card"><div className="stat-top"><span>Needs a restock</span><span className="stat-icon icon-rose"><Icon name="layers" /></span></div><strong>{lowStock.length.toString().padStart(2, '0')}</strong><small>products with fewer than 5 left</small><button className="stat-bottom stat-link" onClick={() => { setSection('Products'); setSearch('') }}><span>View inventory</span><Icon name="arrow" size={14} /></button></article>
-                <article className="stat-card stat-card-accent"><div className="stat-top"><span>Your house, your rules</span><span className="stat-icon icon-white"><Icon name="calendar" /></span></div><strong className="stat-contact">Here for<br />the good stuff.</strong><small>Thoughtfully made. Always yours.</small><a className="stat-bottom" href="mailto:xen@gmail.com"><span>Get in touch · 01912444216</span><Icon name="arrow" size={14} /></a></article>
+                <article className="stat-card stat-card-accent"><div className="stat-top"><span>{storeSettings?.storeName ?? 'Your house, your rules'}</span><span className="stat-icon icon-white"><Icon name="calendar" /></span></div><strong className="stat-contact">Here for<br />the good stuff.</strong><small>Thoughtfully made. Always yours.</small><a className="stat-bottom" href={`mailto:${storeSettings?.contactEmail ?? 'xen@gmail.com'}`}><span>Get in touch · {storeSettings?.phone ?? '01912444216'}</span><Icon name="arrow" size={14} /></a></article>
               </section>
               <section className="content-grid">
                 <article className="panel collection-panel">
@@ -576,15 +584,25 @@ function App() {
             </>
           )}
 
+          {section === 'Orders' && (
+            <section className="panel full-panel">
+              <div className="panel-heading inventory-heading">
+                <div><span className="eyebrow">CUSTOMER CHECKOUT</span><h2>Cash-on-delivery orders</h2></div>
+                <span className="order-payment-note">Payment collected on delivery</span>
+              </div>
+              <OrdersTable />
+            </section>
+          )}
+
           {section === 'Products' && <section className="panel full-panel"><div className="panel-heading inventory-heading"><div><span className="eyebrow">THE COLLECTION</span><h2>Product inventory <span className="heading-count">{products.length}</span></h2></div><div className="table-actions"><label className="search-box"><Icon name="search" size={17} /><input aria-label="Search products" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search your collection" /></label><button className="button button-dark" onClick={() => setProductModal(null)}><Icon name="plus" size={17} /> Add product</button></div></div>{products.length ? filteredProducts.length ? <ProductTable products={filteredProducts} onEdit={(product) => setProductModal(product)} onDelete={removeProduct} /> : <EmptyState title="Nothing by that name" copy="Try another product name, category, or SKU." /> : <EmptyState title="A collection of your own" copy="Start with the essentials: a favorite tee, an everyday panjabi, or something made to keep." action="Add your first product" onClick={() => setProductModal(null)} />}</section>}
 
           {section === 'Categories' && <section className="panel full-panel"><div className="panel-heading inventory-heading"><div><span className="eyebrow">STORE ORGANIZATION</span><h2>Product categories <span className="heading-count">{categoryRecords.length}</span></h2></div><button className="button button-dark" onClick={() => setCategoryModal(null)}><Icon name="plus" size={17} /> Add category</button></div>{categoryRecords.length ? <div className="category-grid">{categoryRecords.map((category) => <article className="category-admin-card" key={category.id}><span className="stat-icon icon-lilac"><Icon name="layers" /></span><div className="category-admin-copy"><strong>{category.name}</strong><small>{category._count?.products ?? 0} {(category._count?.products ?? 0) === 1 ? 'product' : 'products'}</small></div><div className="row-actions"><button className="icon-button" aria-label={`Rename ${category.name}`} onClick={() => setCategoryModal(category)}><Icon name="settings" size={16} /></button><button className="icon-button" aria-label={`Delete ${category.name}`} onClick={async () => { if (!window.confirm(`Delete the ${category.name} category?`)) return; try { await api(`/admin/categories/${category.id}`, { method: 'DELETE' }); await refreshData() } catch (error) { setDataError(error instanceof Error ? error.message : 'Unable to delete category.') } }}><Icon name="close" size={16} /></button></div></article>)}</div> : <EmptyState title="No categories yet" copy="Start with clothing and accessories categories for your collection." action="Add a category" onClick={() => setCategoryModal(null)} />}</section>}
 
           {section === 'Promotions' && <section className="promotions-layout"><div className="promotion-intro"><span className="eyebrow">MAKE IT A MOMENT</span><h2>Good things<br />are <em>better shared.</em></h2><p>Set a thoughtful discount on selected pieces, a whole category, or everything in the house.</p><button className="button button-dark" onClick={() => setPromotionModal(null)}><Icon name="plus" size={17} /> Create an offer</button><div className="offer-summary"><strong>{activePromotions.length.toString().padStart(2, '0')}</strong><span>offers currently live</span></div></div>          <div className="promotion-list"><div className="panel-heading"><div><span className="eyebrow">YOUR CAMPAIGNS</span><h2>Offers & occasions</h2></div><span className="heading-count">{promotions.length}</span></div>{promotions.length ? promotions.map((promotion) => <article className={`promotion-card ${promotion.currentlyLive ? 'promotion-live' : ''}`} key={promotion.id}><div className="promotion-card-top"><span className={`campaign-icon campaign-${promotion.campaignType.toLowerCase()}`}><Icon name={promotion.campaignType === 'EVENT' ? 'calendar' : 'tag'} size={20} /></span><div className="promotion-title"><span className="eyebrow">{campaignLabel(promotion.campaignType)}</span><h3>{promotion.title}</h3></div><span className={`promotion-status ${promotion.currentlyLive ? 'promotion-status-live' : ''}`}>{promotion.status === 'LIVE' ? 'Live now' : promotion.status.charAt(0) + promotion.status.slice(1).toLowerCase()}</span><div className="promotion-actions"><button className="icon-button" aria-label={`Edit ${promotion.title}`} onClick={() => setPromotionModal(promotion)}><Icon name="settings" size={16} /></button><button className="icon-button" aria-label={`Delete ${promotion.title}`} onClick={() => removePromotion(promotion)}><Icon name="close" size={16} /></button></div></div><div className="promotion-details"><strong>{promotion.discountPercent}% <small>OFF</small></strong><div><span>{promotion.targetType === 'STOREWIDE' ? 'Entire store' : promotion.targetType === 'CATEGORY' ? promotion.targetValue : promotion.targetProductNames.join(', ') || 'Selected products'}</span><small>{formatDate(promotion.startsAt)} — {formatDate(promotion.endsAt)}</small></div><button className={`toggle-switch ${promotion.active ? 'toggle-on' : ''}`} role="switch" aria-checked={promotion.active} aria-label={`${promotion.active ? 'Pause' : 'Activate'} ${promotion.title}`} onClick={() => togglePromotion(promotion)}><span /></button></div></article>) : <EmptyState title="Every occasion is an opportunity" copy="Make an Eid edit, welcome the New Year, or give a favorite category its moment." action="Create your first offer" onClick={() => setPromotionModal(null)} />}</div></section>}
 
-          {section === 'Settings' && <section className="settings-layout"><article className="panel settings-card"><span className="eyebrow">YOUR STORE</span><h2>House details</h2><p>A few ways to reach you, and a little about the home you’ve made here.</p><dl className="settings-list"><div><dt>Store name</dt><dd>Xenmesh Fashion House</dd></div><div><dt>Contact email</dt><dd><a href="mailto:xen@gmail.com">xen@gmail.com</a></dd></div><div><dt>Phone</dt><dd><a href="tel:01912444216">01912444216</a></dd></div><div><dt>Administrator</dt><dd>{user.email}</dd></div></dl></article><article className="panel settings-card"><span className="eyebrow">PUBLIC CATALOG</span><h2>Your storefront endpoint</h2><p>Products and active promotions can be browsed publicly. Managing your catalog stays behind your admin sign-in.</p><div className="endpoint-row"><code>GET {API_URL}/catalog/products</code><a href={`${API_URL}/catalog/products`} target="_blank" rel="noreferrer" aria-label="Open public product endpoint"><Icon name="arrow" size={16} /></a></div><div className="endpoint-row"><code>GET {API_URL}/catalog/promotions</code><a href={`${API_URL}/catalog/promotions`} target="_blank" rel="noreferrer" aria-label="Open public promotions endpoint"><Icon name="arrow" size={16} /></a></div></article></section>}
+          {section === 'Settings' && <section className="settings-layout"><StoreSettingsForm administratorEmail={user.email} onSaved={setStoreSettings} /><article className="panel settings-card"><span className="eyebrow">PUBLIC CATALOG</span><h2>Your storefront endpoint</h2><p>Products and active promotions can be browsed publicly. Managing your catalog stays behind your admin sign-in.</p><div className="endpoint-row"><code>GET {API_URL}/catalog/products</code><a href={`${API_URL}/catalog/products`} target="_blank" rel="noreferrer" aria-label="Open public product endpoint"><Icon name="arrow" size={16} /></a></div><div className="endpoint-row"><code>GET {API_URL}/catalog/promotions</code><a href={`${API_URL}/catalog/promotions`} target="_blank" rel="noreferrer" aria-label="Open public promotions endpoint"><Icon name="arrow" size={16} /></a></div></article></section>}
         </div>
-        <footer className="page-footer"><span>© {new Date().getFullYear()} Xenmesh Fashion House</span><span>Made with care, in Dhaka <span className="footer-star">✳</span></span></footer>
+        <footer className="page-footer"><span>© {new Date().getFullYear()} {storeSettings?.storeName ?? 'Xenmesh Fashion House'}</span><span>Made with care, in {storeSettings?.location ?? 'Dhaka, Bangladesh'} <span className="footer-star">✳</span></span></footer>
       </main>
 
       {productModal !== false && <ProductModal product={productModal} categories={categoryRecords.filter((category) => category.active)} onClose={() => setProductModal(false)} onSaved={refreshData} />}

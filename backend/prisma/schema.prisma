@@ -24,6 +24,15 @@ model User {
   sessions     AuthSession[]
 }
 
+model StoreSettings {
+  id           String   @id @default("store") @db.VarChar(24)
+  storeName    String   @db.VarChar(160)
+  contactEmail String   @db.VarChar(254)
+  phone        String   @db.VarChar(32)
+  location     String   @db.VarChar(160)
+  updatedAt    DateTime @updatedAt
+}
+
 model AuthSession {
   id           String   @id @db.Char(64)
   userId       Int
@@ -51,6 +60,42 @@ model Product {
   promotions  ProductPromotion[]
 
   @@index([categoryId])
+}
+
+model Order {
+  id            Int         @id @default(autoincrement())
+  number        String      @unique @db.VarChar(40)
+  customerName  String      @db.VarChar(160)
+  phone         String      @db.VarChar(32)
+  email         String?     @db.VarChar(254)
+  address       String      @db.VarChar(500)
+  city          String?     @db.VarChar(100)
+  notes         String?     @db.VarChar(1000)
+  paymentMethod PaymentMethod @default(CASH_ON_DELIVERY)
+  status        OrderStatus @default(NEW)
+  subtotal      Decimal     @db.Decimal(10, 2)
+  total         Decimal     @db.Decimal(10, 2)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  items         OrderItem[]
+
+  @@index([status, createdAt])
+  @@index([phone])
+}
+
+model OrderItem {
+  id         Int      @id @default(autoincrement())
+  orderId    Int
+  productId  Int
+  name       String   @db.VarChar(160)
+  sku        String   @db.VarChar(64)
+  unitPrice  Decimal  @db.Decimal(10, 2)
+  quantity   Int
+  lineTotal  Decimal  @db.Decimal(10, 2)
+  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@index([productId])
 }
 
 model Category {
@@ -109,4 +154,17 @@ enum PromotionTarget {
 enum UserRole {
   CUSTOMER
   ADMIN
+}
+
+enum PaymentMethod {
+  CASH_ON_DELIVERY
+}
+
+enum OrderStatus {
+  NEW
+  CONFIRMED
+  PREPARING
+  SHIPPED
+  DELIVERED
+  CANCELLED
 }

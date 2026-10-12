@@ -27,8 +27,9 @@
 
 ## Admin authentication
 
-Authentication uses a MySQL-backed opaque session cookie. All API routes are
-protected by default; `POST /auth/sign-in` is the public sign-in route.
+Authentication uses a MySQL-backed opaque session cookie. API routes are
+protected by default; sign-in, public catalog browsing, and cash-on-delivery
+checkout are explicitly public.
 
 1. Keep your existing `.env` and add `PORT=3001`,
    `FRONTEND_URL=http://localhost:3000`, an `ADMIN_EMAIL`, and an
@@ -56,8 +57,15 @@ protected by default; `POST /auth/sign-in` is the public sign-in route.
    `NEXT_PUBLIC_API_URL=http://localhost:3001` and start the frontend.
 
 The API exposes `POST /auth/sign-in`, `GET /auth/me`, and
-`POST /auth/sign-out`. The session cookie is HttpOnly and is not returned as a
-JavaScript-readable token.
+`POST /auth/sign-out`. Customers place COD orders with `POST /orders`; the
+storefront sends product IDs and quantities, and the API validates current
+prices and stock before creating the order. Signed-in administrators review
+orders at `GET /admin/orders` and update order status with
+`PATCH /admin/orders/:id`. Cancelling an order restores its reserved inventory.
+Public store contact details are available from `GET /store/settings` and can
+be changed by an administrator with `PATCH /admin/settings`.
+The session cookie is HttpOnly and is not returned as a JavaScript-readable
+token.
 
 Only browser sessions are persisted in MySQL for this local admin flow. Before
 deploying with `NODE_ENV=production`, add persistent stores for the
