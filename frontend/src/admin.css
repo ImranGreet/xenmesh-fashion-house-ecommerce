@@ -1,0 +1,386 @@
+/* ============================================================
+   LAYOUT & ANIMATION
+   ============================================================ */
+@layer components {
+  .toggle-screen-animation {
+    @apply transition-all duration-300 ease-in-out;
+  }
+}
+
+/* ============================================================
+   SIDEBAR NAVIGATION  (matches subscriber-panel style)
+   ============================================================ */
+@layer components {
+  .nav-item {
+    @apply flex items-center gap-3 px-3 py-2.5 rounded-xl
+           text-sm text-gray-600
+           hover:bg-gray-50 hover:text-gray-900
+           transition-colors w-full select-none;
+  }
+
+  .nav-item .nav-icon {
+    @apply text-base flex-shrink-0;
+  }
+
+  .nav-section-label {
+    @apply text-gray-400 text-[10px] font-semibold uppercase tracking-widest
+           px-3 mb-1.5 mt-4 select-none block;
+  }
+}
+
+/* Active router-link for sidebar — exact match only.
+   router-link-active is intentionally excluded: the dashboard is at path ""
+   which is a prefix of every other route, so using the partial-match class
+   would keep the Dashboard link lit up on every page. */
+.nav-item.router-link-exact-active {
+  background-color: #eef2ff; /* indigo-50 */
+  color: #4338ca !important; /* indigo-700 */
+  font-weight: 600;
+}
+
+.nav-item.router-link-exact-active .nav-icon {
+  color: #4f46e5 !important; /* indigo-600 */
+}
+
+/* ============================================================
+   PAGE HEADERS
+   ============================================================ */
+@layer components {
+  .page-header {
+    @apply flex flex-col sm:flex-row justify-between items-start sm:items-center
+           gap-3 mb-6 pb-5 border-b border-gray-200;
+  }
+
+  .page-title {
+    @apply text-2xl font-black text-gray-900 leading-tight;
+  }
+
+  .page-subtitle {
+    @apply text-sm text-gray-500 mt-0.5;
+  }
+
+  .page-actions {
+    @apply flex flex-wrap items-center gap-2;
+  }
+}
+
+/* ============================================================
+   CONTENT CARDS
+   ============================================================ */
+@layer components {
+  .content-card {
+    @apply bg-white rounded-xl border border-gray-200  overflow-hidden;
+  }
+
+  .settings-card {
+    @apply bg-white rounded-2xl shadow-sm border border-gray-100 p-5 flex flex-col gap-4;
+  }
+
+  .settings-heading {
+    @apply text-lg font-semibold text-gray-900;
+  }
+
+  .settings-subtext {
+    @apply text-sm text-gray-500;
+  }
+}
+
+/* ============================================================
+   SIDEBAR SCROLLBAR
+   ============================================================ */
+.sidebar-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(99, 102, 241, 0.15) transparent;
+}
+
+.sidebar-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(99, 102, 241, 0.15);
+  border-radius: 2px;
+}
+
+/* ============================================================
+   GLOBAL TYPOGRAPHY
+   ============================================================ */
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+/* ============================================================
+   DATA TABLES — PrimeVue DataTable global enhancements
+   ============================================================ */
+
+/* Header cells */
+.p-datatable .p-datatable-thead > tr > th {
+  background: #eef2ff;
+  color: #4338ca;
+  font-size: 0.688rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  padding: 0.8rem 1rem;
+  border-bottom: 2px solid #c7d2fe;
+  white-space: nowrap;
+}
+
+/* Sortable column – idle hover */
+.p-datatable .p-sortable-column:not(.p-highlight):hover {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+/* Active sort column */
+.p-datatable .p-sortable-column.p-highlight,
+.p-datatable .p-sortable-column.p-highlight:hover {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+/* Body cells */
+.p-datatable .p-datatable-tbody > tr > td {
+  padding: 0.7rem 1rem;
+  vertical-align: middle;
+  border-bottom: 1px solid #f3f4f6;
+  transition: background-color 0.12s ease;
+}
+
+/* Striped even rows */
+.p-datatable .p-datatable-tbody > tr:nth-child(even) > td {
+  background: #f9fafb;
+}
+
+/* Row hover */
+.p-datatable .p-datatable-tbody > tr:hover > td {
+  background: #eef2ff !important;
+}
+
+/* Empty row */
+.p-datatable .p-datatable-tbody > tr.p-datatable-empty-message > td {
+  padding: 3rem 1rem;
+  text-align: center;
+  color: #9ca3af;
+}
+
+/* Expansion row background */
+.p-datatable .p-datatable-row-expansion > td {
+  background: #f8faff;
+  padding: 0 !important;
+}
+
+/* Paginator */
+.p-paginator {
+  border-top: 1px solid #e5e7eb;
+  background: #ffffff;
+}
+
+/* Scrollbar for table wrapper */
+.p-datatable-wrapper {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(99, 102, 241, 0.25) transparent;
+}
+.p-datatable-wrapper::-webkit-scrollbar {
+  height: 5px;
+  width: 5px;
+}
+.p-datatable-wrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+.p-datatable-wrapper::-webkit-scrollbar-thumb {
+  background-color: rgba(99, 102, 241, 0.25);
+  border-radius: 3px;
+}
+.p-datatable-wrapper::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(99, 102, 241, 0.45);
+}
+
+/* ============================================================
+   FORMS — Dialog & inline form enhancements
+   ============================================================ */
+
+@layer components {
+  /* Wraps one label + input + error */
+  .form-field {
+    @apply flex flex-col gap-1.5;
+  }
+
+  /* Consistent label style across all forms */
+  .form-label {
+    @apply block text-xs font-semibold text-gray-500 uppercase tracking-wide;
+  }
+
+  /* Inline validation error */
+  .form-error {
+    @apply flex items-center gap-1 text-xs text-red-500;
+  }
+
+  /* Section separator title inside dialogs */
+  .form-section {
+    @apply text-xs font-semibold text-gray-400 uppercase tracking-wider
+           border-b border-gray-100 pb-1;
+  }
+
+  /* Toggle row — status row with switch + label */
+  .form-toggle-row {
+    @apply flex items-center gap-3 px-3 py-2.5 bg-gray-50 rounded-lg
+           border border-gray-100;
+  }
+}
+
+/* Dialog content area */
+.p-dialog .p-dialog-content {
+  padding: 1.25rem 1.5rem;
+}
+
+/* Dialog footer */
+.p-dialog .p-dialog-footer {
+  border-top: 1px solid #e5e7eb;
+  padding: 0.75rem 1.5rem;
+  background: #f9fafb;
+}
+
+/* PrimeVue input focus ring */
+.p-inputtext:focus,
+.p-select:focus-within,
+.p-textarea:focus {
+  outline: none;
+  border-color: #818cf8;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+}
+
+/* Consistent invalid state */
+.p-inputtext.p-invalid,
+.p-textarea.p-invalid {
+  border-color: #f87171;
+}
+
+/* ============================================================
+   PAGE SECTIONS
+   ============================================================ */
+@layer components {
+  .page-section {
+    @apply p-4 sm:p-6;
+  }
+}
+
+/* ============================================================
+   CARD INTERNALS
+   ============================================================ */
+@layer components {
+  /* Indigo icon container used inside content-cards */
+  .card-icon {
+    @apply w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0;
+  }
+
+  /* Icon + title row at the top of a card section */
+  .card-section-header {
+    @apply flex items-center gap-2.5 mb-4;
+  }
+}
+
+/* ============================================================
+   CHART CARDS — padded rounded card (e.g. Dashboard charts)
+   ============================================================ */
+@layer components {
+  .chart-card {
+    @apply bg-white rounded-2xl border border-gray-100 p-6;
+  }
+}
+
+/* ============================================================
+   DIALOG FOOTER
+   ============================================================ */
+@layer components {
+  .dialog-footer {
+    @apply flex justify-end gap-2;
+  }
+}
+
+/* ============================================================
+   DATA DISPLAY TYPOGRAPHY
+   ============================================================ */
+@layer components {
+  /* Key/label in a key-value data grid */
+  .stat-label {
+    @apply text-xs font-semibold text-gray-400 uppercase tracking-wide;
+  }
+
+  /* Value in a key-value data grid */
+  .stat-value {
+    @apply text-sm font-medium text-gray-800 mt-0.5;
+  }
+}
+
+/* ============================================================
+   ADMIN TABLE — native <table> (e.g. ReviewSubscriber)
+   ============================================================ */
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  color: #374151;
+}
+
+.admin-table thead tr th {
+  background: #eef2ff;
+  color: #4338ca;
+  font-size: 0.688rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  padding: 0.8rem 1rem;
+  border-bottom: 2px solid #c7d2fe;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.admin-table tbody tr {
+  border-bottom: 1px solid #f3f4f6;
+  transition: background-color 0.12s ease;
+}
+
+.admin-table tbody tr:nth-child(even) td {
+  background: #f9fafb;
+}
+
+.admin-table tbody tr:hover td {
+  background: #eef2ff !important;
+}
+
+.admin-table tbody td {
+  padding: 0.7rem 1rem;
+  vertical-align: middle;
+}
+
+.admin-table tbody tr.admin-table-empty td {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #9ca3af;
+  font-style: italic;
+  border-bottom: none;
+}
+
+/* ============================================================
+   MOBILE RESPONSIVE OVERRIDES  (from subscriber-panel)
+   ============================================================ */
+@media (max-width: 767px) {
+  .p-dialog {
+    width: 95vw !important;
+    max-width: 95vw !important;
+  }
+
+  .p-dialog .p-dialog-content {
+    max-height: calc(100vh - 11rem);
+    overflow-y: auto;
+  }
+
+  .p-datatable .p-datatable-wrapper {
+    overflow-x: auto;
+  }
+}

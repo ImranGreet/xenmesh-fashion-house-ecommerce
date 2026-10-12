@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Xenmesh Fashion House admin
 
-## Getting Started
+The Vite app provides a cookie-authenticated admin dashboard for managing the
+product catalog and time-bound promotions. The public catalog endpoints do not
+require an admin session.
 
-First, run the development server:
+## Local setup
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. Configure the database connection and an initial admin account in
+   `backend/.env` using `backend/.env.example`.
+2. From `backend`, install dependencies, generate the Prisma client, apply
+   migrations, and start the API:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+   ```sh
+   npm install
+   npx prisma generate --schema prisma
+   npx prisma migrate deploy --schema prisma
+   npm run start:dev
+   ```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. From `frontend`, install dependencies and start Vite:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+   ```sh
+   npm install
+   npm run dev
+   ```
 
-## Learn More
+The dashboard is served at `http://localhost:5173`. Set `VITE_API_URL` in
+`frontend/.env` to override the API origin. The backend's `FRONTEND_URL` must
+match the frontend origin so credentialed sign-in cookies are accepted.
 
-To learn more about Next.js, take a look at the following resources:
+The first admin is created by the backend from `ADMIN_EMAIL` and
+`ADMIN_PASSWORD` on startup. Use the configured credentials to sign in.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## API
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Public endpoints:
 
-## Deploy on Vercel
+- `GET /catalog/categories`
+- `GET /catalog/products`
+- `GET /catalog/promotions` (active offers that have not ended)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Admin session required:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `GET /admin/categories`, `POST /admin/categories`,
+  `PATCH /admin/categories/:id`, `DELETE /admin/categories/:id`
+- `GET /admin/products`, `POST /admin/products`,
+  `PATCH /admin/products/:id`, `DELETE /admin/products/:id`
+- `GET /admin/promotions`, `POST /admin/promotions`,
+  `PATCH /admin/promotions/:id`, `DELETE /admin/promotions/:id`
+
+Admin authentication:
+
+- `POST /auth/sign-in`
+- `GET /auth/me`
+- `POST /auth/sign-out`

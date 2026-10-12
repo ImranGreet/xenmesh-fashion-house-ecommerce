@@ -37,6 +37,75 @@ model AuthSession {
   @@index([userId])
 }
 
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String   @db.VarChar(160)
+  categoryId  Int
+  sku         String   @unique @db.VarChar(64)
+  description String?  @db.Text
+  price       Decimal  @db.Decimal(10, 2)
+  stock       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  category    Category @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  promotions  ProductPromotion[]
+
+  @@index([categoryId])
+}
+
+model Category {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique @db.VarChar(80)
+  slug      String    @unique @db.VarChar(96)
+  active    Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  products  Product[]
+
+  @@index([active, name])
+}
+
+model Promotion {
+  id              Int              @id @default(autoincrement())
+  title           String           @db.VarChar(160)
+  campaignType    CampaignType
+  targetType      PromotionTarget
+  targetValue     String?          @db.VarChar(160)
+  discountPercent Int
+  startsAt        DateTime
+  endsAt          DateTime
+  active          Boolean          @default(true)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  products        ProductPromotion[]
+
+  @@index([active, startsAt, endsAt])
+  @@index([targetType, targetValue])
+}
+
+model ProductPromotion {
+  productId   Int
+  promotionId Int
+  product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  promotion   Promotion @relation(fields: [promotionId], references: [id], onDelete: Cascade)
+
+  @@id([productId, promotionId])
+  @@index([promotionId])
+}
+
+enum CampaignType {
+  SELECTED_PRODUCTS
+  CATEGORY
+  MONTHLY
+  EVENT
+}
+
+enum PromotionTarget {
+  PRODUCTS
+  CATEGORY
+  STOREWIDE
+}
+
 enum UserRole {
   CUSTOMER
   ADMIN
